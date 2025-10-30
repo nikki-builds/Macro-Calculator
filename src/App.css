@@ -32,3 +32,7 @@ button:active { transform: scale(0.98); }
   50% { transform: scale(1.05); }
 }
 .pulse-icon { animation: pulse 2s ease-in-out infinite; }
+
+.results-container {
+  animation: fadeInUp 0.6s ease-out;
+}

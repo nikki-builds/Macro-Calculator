@@ -115,9 +115,6 @@ try {
     goal,
     results: calculationResults
   });
-
- 
-
   console.log('calculation saved to database!');
 }catch(error) {
   console.error('Failed to save calculation:', error);
@@ -149,7 +146,7 @@ try {
       {[
         { label: 'Age (years)', name: 'age', placeholder: '25'},
         { label: 'Weight (kg)', name: 'weight', placeholder: '60'},
-        { label: 'Height (cm)', name: 'age', placeholder: '170'},
+        { label: 'Height (cm)', name: 'height', placeholder: '170'},
       ].map((field) => (
         <div key={field.name} className='mb-4'>
           <label className='block text-sm font-medium text-muted mb-2'>{field.label}</label>
@@ -206,12 +203,12 @@ try {
 
         {/* GENDER select */}
         <div className='mb-4'>
-          <label className='block text-sm font-medium text-gray-700 mb-2'>Gender</label>
+          <label className='block text-sm font-medium text-muted mb-2'>Gender</label>
           <select
           name='gender'
           value={formData.gender}
           onChange={(e)=> setFormData({ ...formData, gender:e.target.value})}
-          className='w-full px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition'
+          className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg focus:ring-2 focus:ring-accent/40 focus:border-transparent transition'
           >
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -220,12 +217,13 @@ try {
 
         {/* ACTIVITY LEVEL select */}
         <div className='mb-4'>
-          <label className='block text-sm font-medium text-gray-700 mb-2'>Activity Level</label>
+          <label className='block text-sm font-medium text-muted mb-2'>Activity Level</label>
           <select
           name='activityLevel'
           value={formData.activityLevel}
           onChange={(e)=> setFormData({ ...formData, activityLevel:e.target.value})}
-          className='w-full px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition'
+          className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg
+                       focus:ring-2 focus:ring-accent/40 focus:border-transparent transition'
           >
             <option value="sedentary">Sedentary (Little or no exercise)</option>
             <option value="light">Light (Light exercise/sports 1-3 days/week)</option>
@@ -237,16 +235,15 @@ try {
         
         {/* GOAL select */}
         <div className='mb-6'>
-          <label className='block text-sm font-medium text-gray-700 mb-2'>
-            <span className='flex items-center'>
-              <Target className='w-4 h-4 mr-1 text-indigo-600'/>
-            Goal</span>
+          <label className='block text-sm font-medium text-muted mb-2 flex items-center'>
+              <Target className='w-4 h-4 mr-1 text-accent'/> Goal
           </label>
           <select
           name='goal'
           value={formData.goal}
           onChange={(e)=> setFormData({...formData, goal:e.target.value})}
-          className='w-full px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition'
+          className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg 
+                       focus:ring-2 focus:ring-accent/40 focus:border-transparent transition'
           >
             <option value="lose">Lose Weight</option>
             <option value="maintain">Maintain</option>
@@ -256,8 +253,7 @@ try {
 
         {/* Calculation Button */}
         <button 
-        onClick={calculateMacros}
-        className='w-full bg-indigo-600 text-white py-3 md:py-4 px-6 rounded-lg font-semibold text-base md:text-lg hover:bg-indigo-700 transform hover:scale-[1.02] transition duration-200 shadow-lg hover:shadow-xl'
+        onClick={calculateMacros} className='mc-button'
         >
           Calculate Macros
           </button>      
@@ -265,83 +261,83 @@ try {
 
 
     {/* Results section */}
-    <div className='max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8'>
-      <h2 className='text-lg md:text-2xl font-semibold text-gray-800 mb-6'>Your Results</h2>
+    <div className='max-w-4xl mx-auto mc-card'>
+      <h2 className='text-lg md:text-2xl font-semibold text-accent mb-6'>Your Results</h2>
       {results ? (
-        <div className='space-y-6'>
+        <div className='space-y-6 result-container'>
            {/* Daily calorie target */}
-          <div className='bg-gradient-to-br from-indigo-50 to-indigo-200 rounded-xl p-6 border border-indigo-200'>
-            <p className='text-sm text-gray-600 mb-2 font-medium'>Daily Calorie Target</p>
-            <p className='text-4xl md:text-5xl font-bold text-indigo-600 mb-3'>{results.targetCalories}</p>
-            <div className='flex justify-between text-xs md:text-sm text-gray-600 pt-3 border-t border-indigo-300'>
-              <span>BMR: <span className='font-semibold'>{results.bmr}</span> kcal/day</span>
-              <span>TDEE: <span className='font-semibold'>{results.tdee}</span> kcal/day</span>
+          <div className='bg-gradient-to-br from-background to-highlight/30 rounded-xl p-6 border border-highlight/40'>
+            <p className='text-sm text-muted mb-2 font-medium'>Daily Calorie Target</p>
+            <p className='text-4xl md:text-5xl font-bold text-accent mb-3'>{results.targetCalories}</p>
+            <div className='flex justify-between text-xs md:text-sm text-muted pt-3 border-t border-highlight/30'>
+              <span>BMR: <span className='font-bold'>{results.bmr}</span> kcal/day</span>
+              <span>TDEE: <span className='font-bold'>{results.tdee}</span> kcal/day</span>
             </div>
           </div>
 
            {/*Macronutrient Breakdown */}
           <div>
-            <h3 className='font-semibold text-gray-700 mb-4 text-lg'>
+            <h3 className='font-semibold text-accent mb-4 text-lg'>
               Macronutrient Breakdown
             </h3>
 
             {/* Protein */}
-            <div className='bg-gray-100 rounded-lg p-4 mb-3'>
+            <div className='bg-background rounded-lg p-4 mb-3 border-highlight/40 shadow-soft'>
               <div className='flex justify-between items-center mb-3'>
-                <span className='text-sm font-semibold text-gray-700'>Protein</span>
+                <span className='text-sm font-semibold text-muted'>Protein</span>
                 <div className='text-right flex flex-col'>
-                  <span className='text-sm font-bold text-indigo-600'>{results.protein.grams}g</span>
-                  <span className='text-xs text-gray-500'>({results.protein.percentage}% • {results.protein.calories}kcal)</span>
+                  <span className='text-sm font-bold text-accent'>{results.protein.grams}g</span>
+                  <span className='text-xs text-muted'>({results.protein.percentage}% • {results.protein.calories}kcal)</span>
                   </div>
                 </div> 
 
-              <div className='w-full bg-gray-200 rounded-full h-3'>
-                <div className='bg-blue-600 h-3 rounded-full transition-all duration-500' style={{width:`${results.protein.percentage}%`}}
+              <div className='mc-progress-track'>
+                <div className='mc-progress-fill progress-bar' style={{width:`${results.protein.percentage}%`}}
                 ></div>
               </div>
             </div> 
 
             {/* Carbs */}
-            <div className='bg-gray-100 rounded-lg p-4 mb-3'>
+            <div className='bg-background rounded-lg p-4 mb-3 border-highlight/40 shadow-soft'>
               <div className='flex justify-between items-center mb-3'>
-                <span className='text-sm font-semibold text-gray-700'>Carbohydrates</span>
+                <span className='text-sm font-semibold text-muted'>Carbohydrates</span>
                 <div className='text-right flex flex-col'>
-                  <span className='text-sm font-bold text-indigo-600'>{results.carbs.grams}g</span>
-                  <span className='text-xs text-gray-500'>({results.carbs.percentage}% • {results.carbs.calories}kcal)</span>
+                  <span className='text-sm font-bold text-accent'>{results.carbs.grams}g</span>
+                  <span className='text-xs text-muted'>({results.carbs.percentage}% • {results.carbs.calories}kcal)</span>
                 </div>
               </div>
 
-              <div className='w-full bg-gray-200 rounded-full h-3'>
-                <div className='bg-blue-600 h-3 rounded-full transition-all duration-500' style={{width:`${results.carbs.percentage}%`}}>
+              <div className='mc-progress-track'>
+                <div className='mc-progress-fill progress-bar' style={{width:`${results.carbs.percentage}%`}}>
                 </div>
               </div>
             </div>
 
             {/* Fats */}
-            <div className='bg-gray-100 rounded-lg p-4 mb-3'>
-              <div className='flex justify-between items-center'>
-                <span className='text-sm font-semibold text-gray-700'>Fats</span>
+            <div className='bg-background rounded-lg p-4 mb-3 border-highlight/40 shadow-soft'>
+              <div className='flex justify-between items-center mb-3'>
+                <span className='text-sm font-semibold text-muted'>Fats</span>
                 <div className='text-right flex flex-col'>
-                  <span className='text-sm font-bold text-indigo-600'>{results.fats.grams}g</span>
-                  <span className='text-xs text-gray-500'>({results.fats.percentage}%) • {results.fats.calories}kcal</span>
+                  <span className='text-sm font-bold text-accent'>{results.fats.grams}g</span>
+                  <span className='text-xs text-muted'>({results.fats.percentage}%) • {results.fats.calories}kcal</span>
                 </div>
               </div>
 
-              <div className='w-full bg-gray-200 rounded-full h-3'>
-                <div className='bg-blue-600 h-3 rounded-full transition-all duration-500' style={{width:`${results.fats.percentage}%`}}></div>
+              <div className='mc-progress-track'>
+                <div className='mc-progress-fill progress-bar' style={{width:`${results.fats.percentage}%`}}></div>
               </div>           
             </div>
           </div>
           
           {/* Info Note */}
-          <div className='bg-blue-50 border-l-4 border-blue-500 p-4 rounded'>
-            <p className='text-sm text-gray-700'>
-              <span className='font-semibold'>Note:</span> Calculations are based on the Mifflin–St Jeor equation, one of the most accurate formulas for estimating basal metabolic rate (BMR). Individual results may vary and should be adjusted according to response and ongoing progress.
+          <div className='bg-background border-l-4 border-accent/70 p-4 rounded'>
+            <p className='text-sm text-muted'>
+              <span className='font-semibold text-accent'>Note:</span> Calculations are based on the Mifflin–St Jeor equation, one of the most accurate formulas for estimating basal metabolic rate (BMR). Individual results may vary and should be adjusted according to response and ongoing progress.
             </p>
           </div>
         </div>
       ) : (
-        <div className='flex flex-col items-center justify-center py-16 text-gray-400'>
+        <div className='flex flex-col items-center justify-center py-16 text-muted'>
           <Calculator className='w-16 h-16 md:w-20 md:h-20 mb-4 opacity-30'/>
           <p className='text-base md:text-lg text-center'>Enter your information and click<br />
           "Calculate Macros" to see your results</p>
@@ -350,7 +346,7 @@ try {
     </div>
 
     {/* Footer */}
-    <div className='text-center mt-8 pb-8 text-gray-500 text-sx md:text-sm'>
+    <div className='text-center mt-8 pb-8 text-muted text-sx md:text-sm'>
       <p>Built with React, Node.js, Express, and MongoDB</p>
       <p>Calculations based on peer-reviewed nutrition research</p>
     </div>
