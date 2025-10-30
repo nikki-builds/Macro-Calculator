@@ -146,7 +146,26 @@ try {
         <Activity className='w-5 h-5 md:w-6 md:h-6 mr-2 text-accent'/>Your Information</h2>
 
       { /* form starts here for AGE input */}
-      <div className='mb-4' >
+      {[
+        { label: 'Age (years)', name: 'age', placeholder: '25'},
+        { label: 'Weight (kg)', name: 'weight', placeholder: '60'},
+        { label: 'Height (cm)', name: 'age', placeholder: '170'},
+      ].map((field) => (
+        <div key={field.name} className='mb-4'>
+          <label className='block text-sm font-medium text-muted mb-2'>{field.label}</label>
+          <input
+          type='number'
+          name={field.name}
+          value={formData[field.name]}
+          onChange={(e)=> setFormData({ ...formData, [field.name]: e.target.value})}
+          placeholder={field.placeholder}
+          className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg focus:ring-2 focus:ring-accent/40 focus:border-transparent transition'
+          />
+        </div>
+      ))}
+
+    
+      {/* <div className='mb-4' >
         <label className='block text-sm font-medium text-gray-700 mb-2'>Age (years)</label>
         <input
         type="number"
@@ -156,10 +175,10 @@ try {
         placeholder="25"
         className='w-full px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition'
         />
-      </div>
+      </div> */}
 
       {/* WEIGHT input */}
-      <div className='mb-4'>
+      {/* <div className='mb-4'>
         <label className='block text-sm font-medium text-gray-700 mb-2'>Weight (kg)</label>
         <input
         type='number'
@@ -169,10 +188,10 @@ try {
         placeholder='70'
         className='w-full px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition'
         />
-      </div>
+      </div> */}
 
       {/* HEIGHT input */}
-      <div className='mb-4'>
+      {/* <div className='mb-4'>
         <label className='block text-sm font-medium text-gray-700 mb-2'>Height (cm)</label>
         <input
         type='number'
@@ -183,6 +202,7 @@ try {
         className='w-full px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition'
         />
        </div>  
+        */}
 
         {/* GENDER select */}
         <div className='mb-4'>
