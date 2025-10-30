@@ -346,7 +346,7 @@ try {
     </div>
 
     {/* Footer */}
-    <div className='text-center mt-8 pb-8 text-muted text-sx md:text-sm'>
+    <div className='text-center mt-8 pb-8 text-muted text-xs md:text-sm'>
       <p>Built with React, Node.js, Express, and MongoDB</p>
       <p>Calculations based on peer-reviewed nutrition research</p>
     </div>
