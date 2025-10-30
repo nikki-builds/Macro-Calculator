@@ -1,13 +1,68 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased bg-background text-primary min-h-screen;
+    background: linear-gradient(135deg, #F2E9E4 0%, #C9ADA7 100%);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-primary;
+  }
+
+  input, select, button {
+    @apply font-medium;
+  }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer components {
+  .mc-card {
+    @apply bg-white/80 backdrop-blur-md rounded-xl shadow-soft border border-highlight/40 p-6 md:p-8;
+  }
+
+  .mc-progress-track {
+    @apply w-full bg-highlight/20 rounded-full h-3;
+  }
+
+  .mc-progress-fill {
+    @apply h-3 rounded-full transition-all duration-500 bg-accent;
+  }
+
+  .mc-section-header {
+    @apply text-lg md:text-2xl font-semibold text-accent mb-6 flex items-center;
+  }
+
+  .mc-button {
+    @apply w-full bg-accent text-background py-3 md:py-4 px-6 rounded-lg font-semibold 
+           text-base md:text-lg hover:bg-primary transform hover:scale-[1.02]
+           transition duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #4A4E69 90%, #9A8C98 20%, #C9ADA7 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+.pulse-icon { animation: pulse 2s ease-in-out infinite; }
+
+.shadow-soft {
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+}
+.shadow-soft:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }

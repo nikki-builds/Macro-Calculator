@@ -1,38 +1,34 @@
-.App {
-  text-align: center;
+/* App.css — minimal, effect-only styles tied to the new palette */
+
+/* Smooth transitions for form controls & buttons (avoid global * selector) */
+input, select, button {
+  transition: all 0.2s ease-in-out;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Scrollbar using the new theme */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #F2E9E4; }      /* background */
+::-webkit-scrollbar-thumb { background: #4A4E69; border-radius: 6px; } /* accent */
+::-webkit-scrollbar-thumb:hover { background: #22223B; } /* primary/dark */
+
+/* Focus outlines for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid rgba(74, 78, 105, 0.6);  /* accent/60% */
+  outline-offset: 2px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+/* Tap/press feedback */
+button:active { transform: scale(0.98); }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* Progress bar entry animation (used together with .mc-progress-fill) */
+@keyframes progressBar {
+  from { width: 0; }
 }
+.progress-bar { animation: progressBar 0.9s ease-out; }
 
-.App-link {
-  color: #61dafb;
+/* Optional: subtle pulse for the calculator icon */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+.pulse-icon { animation: pulse 2s ease-in-out infinite; }
