@@ -1,7 +1,9 @@
 import React, { useState} from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { Calculator,Activity, Target } from 'lucide-react';
-import { saveCalculation } from './services/api';
+import { saveCalculation, getAllCalculations, deleteCalculation } from './services/api';
 import './App.css';
+
 
 const MacroCalculator = () => {
   // This is where I'm storing form data
@@ -16,6 +18,8 @@ const MacroCalculator = () => {
 
   // This is where I'll store calculation results
   const [results, setResults] = useState(null); // null: nothing or empty (no data yet or intentionall empty)
+
+  const [isLoading, setIsLoading] = useState(false);
 
 // step 4 starts here
 
@@ -39,10 +43,18 @@ const calculateBMR = (weight, height, age, gender) => {
 
 // Main calculate function 
 const calculateMacros = async () => {
-  const { age, weight, height, gender, activityLevel, goal } = formData
+  const { age, weight, height, gender, activityLevel, goal } = formData;
   // long way:
   // const age = formData.age;
   // const weight = formData.weight;
+
+  // validation
+  if(!age || !weight || !height) {
+    toast.error('Please fill in all fields!');
+    return;
+  }
+
+  setIsLoading(true); // show loading spinner
 
   const bmr = calculateBMR(
     parseFloat(weight),
@@ -115,9 +127,15 @@ try {
     goal,
     results: calculationResults
   });
+  
+  toast.success('Calculation saved successfully!'); // Success toast
   console.log('calculation saved to database!');
+
 }catch(error) {
   console.error('Failed to save calculation:', error);
+  toast.error('Failed to save calculation. Please try again.'); // Error toast
+} finally {
+  setIsLoading(false); // Hide loading spinner
 }
 
 };
@@ -126,6 +144,7 @@ try {
 
   return (
     <div className='min-h-screen bg-background p-4 md:p-8'>
+      <Toaster position='top-right'/> 
     
 
       {/* Header section */}
@@ -253,7 +272,8 @@ try {
 
         {/* Calculation Button */}
         <button 
-        onClick={calculateMacros} className='mc-button'
+        onClick={calculateMacros} 
+        className='mc-button'
         >
           Calculate Macros
           </button>      

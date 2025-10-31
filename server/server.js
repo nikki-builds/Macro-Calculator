@@ -2,7 +2,6 @@ const express = require('express'); // web server framework
 const mongoose = require('mongoose'); // MongoDB tool
 const cors = require('cors'); // lets frontend (port 3000) talk to backend(port 5000)
 const dotenv = require('dotenv'); // loads variables from .env file
-const connectCB = require('./config/db'); // my custom function from db.js
 const connectDB = require('./config/db');
 
 // load environment variables
