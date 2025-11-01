@@ -1,70 +1,169 @@
-# Getting Started with Create React App
+# 💪 Macro Calculator Pro
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack web application that calculates personalized daily calorie targets and macronutrient breakdown based on user information and fitness goals.
 
-## Available Scripts
+![Macro Calculator Screenshot](./assets/screenshot-mc-before.png)
+![Macro Calculator Screenshot](./assets/screenshot-mc-after.png)
 
-In the project directory, you can run:
+## 🌟 Features
 
-### `npm start`
+- **Accurate BMR Calculation** - Uses the Mifflin-St Jeor equation
+- **Activity-Based TDEE** - Adjusts for 5 different activity levels
+- **Goal-Oriented Plans** - Tailored macros for weight loss, maintenance, or muscle gain
+- **Visual Breakdown** - Interactive progress bars showing macro distribution
+- **Data Persistence** - Calculations automatically saved to MongoDB database
+- **Smart Validation** - Real-time form validation with helpful error messages
+- **Toast Notifications** - Instant feedback on successful saves or errors
+- **Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🛠️ Tech Stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+**Frontend:**
+- React.js
+- CSS3 with custom animations
+- Lucide React (icons)
+- React Hot Toast (notifications)
 
-### `npm test`
+**Backend:**
+- Node.js
+- Express.js
+- MongoDB with Mongoose
+- CORS enabled
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Development Tools:**
+- npm
+- Git & GitHub
+- VS Code
 
-### `npm run build`
+## 📦 Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB Atlas account (or local MongoDB)
+- npm or yarn
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Clone the repository
+```bash
+git clone https://git@github.com:nikki-builds/Macro-Calculator.git
+cd macro-calculator
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Install dependencies
 
-### `npm run eject`
+**Frontend:**
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Backend:**
+```bash
+cd server
+npm install
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Environment Setup
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Create a `.env` file in the `server` folder:
+```
+PORT=5000
+MONGODB_URI=mongodb+srv://nikkibuildsthis_db_user:fJcbCGmuCwtbwNYC@cluster0.gdwtrwh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Run the application
 
-## Learn More
+**Start Backend (Terminal 1):**
+```bash
+cd server
+node server.js
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Start Frontend (Terminal 2):**
+```bash
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The app will open at `http://localhost:3000`
 
-### Code Splitting
+## 🎯 How It Works
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+1. **Enter Your Information**
+   - Age, weight, height, gender
+   - Activity level (sedentary to very active)
+   - Goal (lose weight, maintain, or gain muscle)
 
-### Analyzing the Bundle Size
+2. **Calculate**
+   - App calculates BMR using Mifflin-St Jeor equation
+   - Determines TDEE based on activity level
+   - Adjusts calories for your goal (+/- 500 kcal)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+3. **View Results**
+   - Daily calorie target
+   - Protein, carbs, and fats breakdown
+   - Grams, percentages, and calories for each macro
 
-### Making a Progressive Web App
+4. **Auto-Save**
+   - Calculations automatically saved to database
+   - Instant confirmation with toast notification
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📊 Calculation Methods
 
-### Advanced Configuration
+### BMR (Basal Metabolic Rate)
+**Men:** BMR = 10 × weight(kg) + 6.25 × height(cm) - 5 × age(years) + 5  
+**Women:** BMR = 10 × weight(kg) + 6.25 × height(cm) - 5 × age(years) - 161
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### TDEE (Total Daily Energy Expenditure)
+TDEE = BMR × Activity Multiplier
+- Sedentary: 1.2
+- Light: 1.375
+- Moderate: 1.55
+- Active: 1.725
+- Very Active: 1.9
 
-### Deployment
+### Macro Splits
+**Weight Loss:** 35% protein, 30% carbs, 35% fats  
+**Maintenance:** 30% protein, 40% carbs, 30% fats  
+**Muscle Gain:** 30% protein, 45% carbs, 25% fats
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🚀 Future Enhancements
 
-### `npm run build` fails to minify
+- [ ] User authentication (sign up/login)
+- [ ] Personalized calculation history per user
+- [ ] Meal planning suggestions
+- [ ] Progress tracking over time
+- [ ] AI-powered nutrition recommendations
+- [ ] Export results as PDF
+- [ ] Mobile app version
+- [ ] Food database integration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📝 API Endpoints
+
+### Calculations
+- `POST /api/calculations` - Save new calculation
+- `GET /api/calculations` - Get all calculations
+- `GET /api/calculations/:id` - Get single calculation
+- `DELETE /api/calculations/:id` - Delete calculation
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 👤 Author
+
+**Your Name**
+- GitHub: [@yourusername](https://github.com/nikki-builds)
+- LinkedIn: [Your Name](https://linkedin.com/in/yourprofile)
+- Portfolio: [yourwebsite.com](https://yourwebsite.com)
+
+## 🙏 Acknowledgments
+
+- Mifflin-St Jeor equation for BMR calculation
+- Nutrition research for macro distribution guidelines
+- React and Node.js communities
+
+---
+
+⭐ Star this repo if you found it helpful!
