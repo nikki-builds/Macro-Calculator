@@ -66,7 +66,7 @@ npm install
 Create a `.env` file in the `server` folder:
 ```
 PORT=5000
-MONGODB_URI=mongodb+srv://nikkibuildsthis_db_user:fJcbCGmuCwtbwNYC@cluster0.gdwtrwh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+MONGODB_URI=mongodb+srv://<USERNAME>:<PASSWORD>@cluster0.gdwtrwh.mongodb.net/<DATABASE_NAME>
 ```
 
 ### Run the application
