@@ -1,5 +1,9 @@
 # 💪 Macro Calculator Pro
 
+## 🌐 Live Demo
+
+**[View Live Demo](https://macro-calculator-pi.vercel.app/)**
+
 A full-stack web application that calculates personalized daily calorie targets and macronutrient breakdown based on user information and fitness goals.
 
 ![Macro Calculator Screenshot](./assets/screenshot-mc-before.png)
@@ -147,16 +151,15 @@ TDEE = BMR × Activity Multiplier
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License.
+MIT License.
 
 ## 👤 Author
 
-**Your Name**
-- GitHub: [@yourusername](https://github.com/nikki-builds)
-- LinkedIn: [Your Name](https://linkedin.com/in/yourprofile)
-- Portfolio: [yourwebsite.com](https://yourwebsite.com)
+**Na Yeon (Nikki) Kim**
+- Transitioning from nutrition background to tech
+- Combining nutrition expertise with full-stack development
 
 ## 🙏 Acknowledgments
 

@@ -1,6 +1,9 @@
 // this file handles all API calls to the backend
 
-const API_URL = 'http://localhost:5000/api/calculations';
+// In production (Vercel), REACT_APP_API_URL is the Render backend URL.
+// Locally it falls back to the backend running on this computer.
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_URL = `${API_BASE_URL}/api/calculations`;
 
 // create a function that takes calculation data as input
 export const saveCalculation = async (calculationData) => {
