@@ -1,7 +1,6 @@
 import React, { useState} from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { Calculator,Activity, Target } from 'lucide-react';
-import { saveCalculation, getAllCalculations, deleteCalculation } from './services/api';
 import './App.css';
 
 
@@ -115,28 +114,8 @@ const calculateMacros = async () => {
 
   setResults(calculationResults);
 
-try {
-  await saveCalculation ({
-    personalInfo: {
-      age: parseInt(age),
-      weight:parseFloat(weight),
-      height: parseFloat(height),
-      gender,
-      activityLevel
-    },
-    goal,
-    results: calculationResults
-  });
-  
-  toast.success('Calculation saved successfully!'); // Success toast
-  console.log('calculation saved to database!');
-
-}catch(error) {
-  console.error('Failed to save calculation:', error);
-  toast.error('Failed to save calculation. Please try again.'); // Error toast
-} finally {
-  setIsLoading(false); // Hide loading spinner
-}
+  // Calculation runs entirely in the browser; results are not saved anywhere.
+  setIsLoading(false);
 
 };
 
