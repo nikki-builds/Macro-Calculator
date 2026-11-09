@@ -14,6 +14,9 @@ A React web app that calculates personalized daily calorie targets and a macronu
 - **Accurate BMR Calculation** - Uses the Mifflin-St Jeor equation
 - **Activity-Based TDEE** - Adjusts for 5 different activity levels
 - **Goal-Oriented Plans** - Tailored macros for weight loss, maintenance, or muscle gain
+- **US or Metric Units** - Enter lb and ft/in, or kg and cm
+- **Safe Minimum** - Calorie targets never go below 1,200 kcal/day, with a clear warning when the formula suggests less
+- **Muscle Gain Guidance** - A short tip on strength training and protein timing for the gain goal
 - **Visual Breakdown** - Progress bars showing macro distribution
 - **Private by Design** - Runs entirely in the browser; no personal data is sent or saved
 - **Form Validation** - A friendly toast message if a field is left empty
@@ -49,22 +52,29 @@ The app will open at `http://localhost:3000`. No environment variables or databa
 ## 🎯 How It Works
 
 1. **Enter Your Information**
-   - Age, weight (kg), height (cm), gender
+   - Age, weight (lb or kg), height (ft/in or cm), gender
    - Activity level (sedentary to very active)
    - Goal (lose weight, maintain, or gain muscle)
 
 2. **Calculate**
    - Calculates BMR using the Mifflin-St Jeor equation
    - Determines TDEE based on activity level
-   - Adjusts calories for your goal (+/- 500 kcal)
+   - Adjusts calories for your goal (+/- 500 kcal), with a 1,200 kcal minimum
 
 3. **View Results**
-   - Daily calorie target, with BMR and TDEE
+   - Daily calorie target, with BMR and TDEE explained
    - Protein, carbs, and fats in grams, percentages, and calories
 
 ## 📊 Calculation Methods
 
+### Units
+The formulas use kilograms and centimeters. US inputs are converted first:
+- 1 lb = 0.4536 kg
+- 1 in = 2.54 cm (height in ft/in is converted to total inches first)
+
 ### BMR (Basal Metabolic Rate)
+Energy your body uses at rest, using the Mifflin-St Jeor equation:
+
 **Men:** BMR = 10 × weight(kg) + 6.25 × height(cm) - 5 × age(years) + 5  
 **Women:** BMR = 10 × weight(kg) + 6.25 × height(cm) - 5 × age(years) - 161
 
@@ -76,10 +86,23 @@ TDEE = BMR × Activity Multiplier
 - Active: 1.725
 - Very Active: 1.9
 
-### Macro Splits
-**Weight Loss:** 35% protein, 30% carbs, 35% fats  
-**Maintenance:** 30% protein, 40% carbs, 30% fats  
-**Muscle Gain:** 30% protein, 45% carbs, 25% fats
+### Daily Calorie Target
+- **Lose Weight:** TDEE - 500 kcal
+- **Maintain:** TDEE
+- **Gain Muscle:** TDEE + 500 kcal
+
+The target never goes below **1,200 kcal/day**. If the formula suggests less, the app uses 1,200 and shows a warning, since eating below that level isn't recommended for adults without medical supervision.
+
+### Macronutrients
+Protein is based on body weight, not on a share of calories, so it doesn't grow just because calories are high.
+
+| Goal | Protein | Fat | Carbohydrates |
+|---|---|---|---|
+| Lose Weight | 1.8 g per kg of body weight | 30% of calories | Remaining calories |
+| Maintain | 1.4 g per kg of body weight | 30% of calories | Remaining calories |
+| Gain Muscle | 1.8 g per kg of body weight | 25% of calories | Remaining calories |
+
+Grams are converted using 4 kcal/g for protein and carbohydrates and 9 kcal/g for fat. Percentages shown in the app are each macro's calories divided by the daily target.
 
 ## 🧪 About the `server` Folder
 
@@ -95,7 +118,6 @@ The backend code is kept for reference. Its endpoints:
 
 ## 🚀 Future Enhancements
 
-- [ ] Imperial units (lb, ft/in)
 - [ ] Meal planning suggestions
 - [ ] Export results as PDF
 - [ ] Optional saved history (stored on your device)

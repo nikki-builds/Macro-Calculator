@@ -8,8 +8,11 @@ const MacroCalculator = () => {
   // This is where I'm storing form data
   const [formData, setFormData] = useState({
     age:'',
-    weight:'',
-    height: '',
+    unit: 'us',      // 'us' (lb, ft/in) or 'metric' (kg, cm)
+    weight:'',       // lb or kg, depending on unit
+    height: '',      // cm (metric only)
+    heightFt: '',    // ft (US only)
+    heightIn: '',    // in (US only)
     gender: 'male',
     activityLevel: 'sedentary',
     goal: 'maintain'
@@ -42,73 +45,86 @@ const calculateBMR = (weight, height, age, gender) => {
 
 // Main calculate function 
 const calculateMacros = async () => {
-  const { age, weight, height, gender, activityLevel, goal } = formData;
+  const { age, unit, weight, height, heightFt, heightIn, gender, activityLevel, goal } = formData;
   // long way:
   // const age = formData.age;
   // const weight = formData.weight;
 
   // validation
-  if(!age || !weight || !height) {
+  const heightMissing = unit === 'us' ? !heightFt : !height;
+  if(!age || !weight || heightMissing) {
     toast.error('Please fill in all fields!');
     return;
   }
 
   setIsLoading(true); // show loading spinner
 
+  // The formulas use kg and cm, so US inputs are converted first.
+  const weightKg = unit === 'us' ? parseFloat(weight) * 0.453592 : parseFloat(weight);
+  const heightCm = unit === 'us'
+    ? (parseFloat(heightFt) * 12 + (parseFloat(heightIn) || 0)) * 2.54
+    : parseFloat(height);
+
   const bmr = calculateBMR(
-    parseFloat(weight),
-    parseFloat(height),
-    parseInt(age),
+    weightKg,
+    heightCm,
+    parseFloat(age),
     gender
   );
 
   const tdee = bmr * activityMultipliers[activityLevel];
 
-  let targetCalories = tdee;
+  let calculatedCalories = tdee;
   if (goal === 'lose') {
-    targetCalories = tdee - 500; 
+    calculatedCalories = tdee - 500; 
   } else if (goal === 'gain') {
-    targetCalories = tdee + 500; 
+    calculatedCalories = tdee + 500; 
   }
 
-  let proteinPercent, carbsPercent, fatsPercent;
+  // Never recommend less than 1,200 kcal/day
+  const MIN_CALORIES = 1200;
+  const belowMinimum = calculatedCalories < MIN_CALORIES;
+  const targetCalories = Math.max(calculatedCalories, MIN_CALORIES);
 
-  if(goal === 'lose') {
-    proteinPercent = 0.35;
-    carbsPercent = 0.30;
-    fatsPercent = 0.35;
-  } else if (goal === 'gain') {
-    proteinPercent = 0.30;
-    carbsPercent = 0.45;
-    fatsPercent = 0.25;
-  } else {
-    proteinPercent = 0.30;
-    carbsPercent = 0.40;
-    fatsPercent = 0.30;
-  }
+  // Protein is set by body weight (g per kg), not by a % of calories,
+  // so it doesn't grow just because calories are high.
+  const proteinPerKg = { lose: 1.8, maintain: 1.4, gain: 1.8 };
+  // Fat is a share of calories; carbs fill whatever calories are left.
+  const fatShare = { lose: 0.30, maintain: 0.30, gain: 0.25 };
 
-  const proteinGrams = Math.round((targetCalories * proteinPercent) / 4);
-  const carbsGrams = Math.round((targetCalories * carbsPercent) / 4);
-  const fatsGrams = Math.round((targetCalories * fatsPercent) / 9);
+  const proteinGrams = Math.round(weightKg * proteinPerKg[goal]);
+  const proteinCalories = proteinGrams * 4;
+
+  const fatsGrams = Math.round((targetCalories * fatShare[goal]) / 9);
+  const fatsCalories = fatsGrams * 9;
+
+  const carbsCalories = Math.max(targetCalories - proteinCalories - fatsCalories, 0);
+  const carbsGrams = Math.round(carbsCalories / 4);
+
+  const percentOf = (kcal) => Math.round((kcal / targetCalories) * 100);
 
   const calculationResults = {
     bmr: Math.round(bmr),
     tdee: Math.round(tdee),
     targetCalories: Math.round(targetCalories),
+    calculatedCalories: Math.round(calculatedCalories),
+    belowMinimum,
+    goal,
     protein: {
       grams: proteinGrams,
-      calories: proteinGrams * 4,
-      percentage: Math.round(proteinPercent * 100)
+      calories: proteinCalories,
+      percentage: percentOf(proteinCalories),
+      perKg: proteinPerKg[goal]
     },
     carbs: {
       grams: carbsGrams,
       calories: carbsGrams * 4,
-      percentage: Math.round(carbsPercent * 100)
+      percentage: percentOf(carbsGrams * 4)
     },
     fats: {
       grams: fatsGrams,
-      calories: fatsGrams * 9,
-      percentage: Math.round(fatsPercent * 100)
+      calories: fatsCalories,
+      percentage: percentOf(fatsCalories)
     }
   };
 
@@ -140,24 +156,81 @@ const calculateMacros = async () => {
       <h2 className='mc-section-header'>
         <Activity className='w-5 h-5 md:w-6 md:h-6 mr-2 text-accent'/>Your Information</h2>
 
-      { /* form starts here for AGE input */}
-      {[
-        { label: 'Age (years)', name: 'age', placeholder: '25'},
-        { label: 'Weight (kg)', name: 'weight', placeholder: '60'},
-        { label: 'Height (cm)', name: 'height', placeholder: '170'},
-      ].map((field) => (
-        <div key={field.name} className='mb-4'>
-          <label className='block text-sm font-medium text-muted mb-2'>{field.label}</label>
-          <input
-          type='number'
-          name={field.name}
-          value={formData[field.name]}
-          onChange={(e)=> setFormData({ ...formData, [field.name]: e.target.value})}
-          placeholder={field.placeholder}
-          className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg focus:ring-2 focus:ring-accent/40 focus:border-transparent transition'
-          />
+      {/* Unit toggle: US (lb, ft/in) or Metric (kg, cm) */}
+      <div className='mb-4'>
+        <span className='block text-sm font-medium text-muted mb-2' id='unit-label'>Units</span>
+        <div className='inline-flex rounded-lg border border-highlight/50 overflow-hidden' role='group' aria-labelledby='unit-label'>
+          {[
+            { value: 'us', label: 'US (lb, ft/in)' },
+            { value: 'metric', label: 'Metric (kg, cm)' },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              type='button'
+              aria-pressed={formData.unit === opt.value}
+              onClick={() => setFormData({ ...formData, unit: opt.value, weight: '', height: '', heightFt: '', heightIn: '' })}
+              className={`px-4 py-2 min-h-[44px] text-sm font-medium transition ${
+                formData.unit === opt.value ? 'bg-accent text-white' : 'bg-transparent text-muted hover:bg-highlight/30'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
-      ))}
+      </div>
+
+      {/* AGE */}
+      <div className='mb-4'>
+        <label htmlFor='age' className='block text-sm font-medium text-muted mb-2'>Age (years)</label>
+        <input id='age' type='number' name='age' value={formData.age} placeholder='25'
+          onChange={(e)=> setFormData({ ...formData, age: e.target.value })}
+          className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg focus:ring-2 focus:ring-accent/40 focus:border-transparent transition' />
+      </div>
+
+      {/* WEIGHT */}
+      <div className='mb-4'>
+        <label htmlFor='weight' className='block text-sm font-medium text-muted mb-2'>
+          Weight ({formData.unit === 'us' ? 'lb' : 'kg'})
+        </label>
+        <input id='weight' type='number' name='weight' value={formData.weight}
+          placeholder={formData.unit === 'us' ? '140' : '63'}
+          onChange={(e)=> setFormData({ ...formData, weight: e.target.value })}
+          className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg focus:ring-2 focus:ring-accent/40 focus:border-transparent transition' />
+      </div>
+
+      {/* HEIGHT */}
+      {formData.unit === 'us' ? (
+        <fieldset className='mb-4'>
+          <legend className='block text-sm font-medium text-muted mb-2'>Height</legend>
+          <div className='flex gap-3'>
+            <div className='flex-1'>
+              <label htmlFor='heightFt' className='sr-only'>Feet</label>
+              <div className='relative'>
+                <input id='heightFt' type='number' name='heightFt' value={formData.heightFt} placeholder='5'
+                  onChange={(e)=> setFormData({ ...formData, heightFt: e.target.value })}
+                  className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg focus:ring-2 focus:ring-accent/40 focus:border-transparent transition pr-10' />
+                <span className='absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted' aria-hidden='true'>ft</span>
+              </div>
+            </div>
+            <div className='flex-1'>
+              <label htmlFor='heightIn' className='sr-only'>Inches</label>
+              <div className='relative'>
+                <input id='heightIn' type='number' name='heightIn' value={formData.heightIn} placeholder='4'
+                  onChange={(e)=> setFormData({ ...formData, heightIn: e.target.value })}
+                  className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg focus:ring-2 focus:ring-accent/40 focus:border-transparent transition pr-10' />
+                <span className='absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted' aria-hidden='true'>in</span>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      ) : (
+        <div className='mb-4'>
+          <label htmlFor='height' className='block text-sm font-medium text-muted mb-2'>Height (cm)</label>
+          <input id='height' type='number' name='height' value={formData.height} placeholder='163'
+            onChange={(e)=> setFormData({ ...formData, height: e.target.value })}
+            className='w-full px-4 py-2 md:py-3 border border-highlight/50 rounded-lg focus:ring-2 focus:ring-accent/40 focus:border-transparent transition' />
+        </div>
+      )}
 
     
       {/* <div className='mb-4' >
@@ -268,11 +341,28 @@ const calculateMacros = async () => {
           <div className='bg-gradient-to-br from-background to-highlight/30 rounded-xl p-6 border border-highlight/40'>
             <p className='text-sm text-muted mb-2 font-medium'>Daily Calorie Target</p>
             <p className='text-4xl md:text-5xl font-bold text-accent mb-3'>{results.targetCalories}</p>
-            <div className='flex justify-between text-xs md:text-sm text-muted pt-3 border-t border-highlight/30'>
-              <span>BMR: <span className='font-bold'>{results.bmr}</span> kcal/day</span>
-              <span>TDEE: <span className='font-bold'>{results.tdee}</span> kcal/day</span>
+            <div className='flex justify-between gap-4 text-xs md:text-sm text-muted pt-3 border-t border-highlight/30'>
+              <div>
+                <p>BMR: <span className='font-bold'>{results.bmr}</span> kcal/day</p>
+                <p className='text-[11px] md:text-xs mt-0.5'>Basal Metabolic Rate: energy your body uses at rest</p>
+              </div>
+              <div className='text-right'>
+                <p>TDEE: <span className='font-bold'>{results.tdee}</span> kcal/day</p>
+                <p className='text-[11px] md:text-xs mt-0.5'>Total Daily Energy Expenditure: BMR plus activity</p>
+              </div>
             </div>
           </div>
+
+          {/* F. Minimum calorie warning */}
+          {results.belowMinimum && (
+            <div role='alert' className='rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-800'>
+              <p className='font-semibold'>Your target was raised to 1,200 kcal.</p>
+              <p className='mt-1'>
+                Based on your inputs, the formula suggested {results.calculatedCalories} kcal/day. Eating below
+                1,200 kcal a day can be risky for adults and isn't recommended without medical supervision.
+              </p>
+            </div>
+          )}
 
            {/*Macronutrient Breakdown */}
           <div>
@@ -328,6 +418,17 @@ const calculateMacros = async () => {
             </div>
           </div>
           
+          {/* Muscle gain tip */}
+          {results.goal === 'gain' && (
+            <div className='bg-background border-l-4 border-accent/70 p-4 rounded'>
+              <p className='text-sm text-muted'>
+                <span className='font-semibold text-accent'>Building muscle:</span> Extra calories alone won't build
+                muscle. Pair this plan with regular strength training, and spread your protein across meals
+                (about 20 to 40 g per meal).
+              </p>
+            </div>
+          )}
+
           {/* Info Note */}
           <div className='bg-background border-l-4 border-accent/70 p-4 rounded'>
             <p className='text-sm text-muted'>
