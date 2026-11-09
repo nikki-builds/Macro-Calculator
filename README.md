@@ -4,7 +4,7 @@
 
 **[View Live Demo](https://macro-calculator-pi.vercel.app/)**
 
-A full-stack web application that calculates personalized daily calorie targets and macronutrient breakdown based on user information and fitness goals.
+A React web app that calculates personalized daily calorie targets and a macronutrient breakdown based on your information and fitness goal. All calculations run in the browser, so results appear instantly and nothing you enter is stored.
 
 ![Macro Calculator Screenshot](./assets/screenshot-mc-before.png)
 ![Macro Calculator Screenshot](./assets/screenshot-mc-after.png)
@@ -14,100 +14,53 @@ A full-stack web application that calculates personalized daily calorie targets 
 - **Accurate BMR Calculation** - Uses the Mifflin-St Jeor equation
 - **Activity-Based TDEE** - Adjusts for 5 different activity levels
 - **Goal-Oriented Plans** - Tailored macros for weight loss, maintenance, or muscle gain
-- **Visual Breakdown** - Interactive progress bars showing macro distribution
-- **Data Persistence** - Calculations automatically saved to MongoDB database
-- **Smart Validation** - Real-time form validation with helpful error messages
-- **Toast Notifications** - Instant feedback on successful saves or errors
-- **Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
+- **Visual Breakdown** - Progress bars showing macro distribution
+- **Private by Design** - Runs entirely in the browser; no personal data is sent or saved
+- **Form Validation** - A friendly toast message if a field is left empty
+- **Responsive Design** - Works on desktop, tablet, and mobile
 
 ## 🛠️ Tech Stack
 
-**Frontend:**
 - React.js
 - CSS3 with custom animations
+- Tailwind CSS
 - Lucide React (icons)
 - React Hot Toast (notifications)
+- Deployed on Vercel
 
-**Backend:**
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- CORS enabled
-
-**Development Tools:**
-- npm
-- Git & GitHub
-- VS Code
+**Development Tools:** npm, Git & GitHub, VS Code
 
 ## 📦 Installation
 
 ### Prerequisites
 - Node.js (v14 or higher)
-- MongoDB Atlas account (or local MongoDB)
-- npm or yarn
+- npm
 
-### Clone the repository
+### Clone and run
 ```bash
-git clone https://git@github.com:nikki-builds/Macro-Calculator.git
-cd macro-calculator
-```
-
-### Install dependencies
-
-**Frontend:**
-```bash
+git clone https://github.com/nikki-builds/Macro-Calculator.git
+cd Macro-Calculator
 npm install
-```
-
-**Backend:**
-```bash
-cd server
-npm install
-```
-
-### Environment Setup
-
-Create a `.env` file in the `server` folder:
-```
-PORT=5000
-MONGODB_URI=mongodb+srv://<USERNAME>:<PASSWORD>@cluster0.gdwtrwh.mongodb.net/<DATABASE_NAME>
-```
-
-### Run the application
-
-**Start Backend (Terminal 1):**
-```bash
-cd server
-node server.js
-```
-
-**Start Frontend (Terminal 2):**
-```bash
 npm start
 ```
 
-The app will open at `http://localhost:3000`
+The app will open at `http://localhost:3000`. No environment variables or database are needed.
 
 ## 🎯 How It Works
 
 1. **Enter Your Information**
-   - Age, weight, height, gender
+   - Age, weight (kg), height (cm), gender
    - Activity level (sedentary to very active)
    - Goal (lose weight, maintain, or gain muscle)
 
 2. **Calculate**
-   - App calculates BMR using Mifflin-St Jeor equation
+   - Calculates BMR using the Mifflin-St Jeor equation
    - Determines TDEE based on activity level
    - Adjusts calories for your goal (+/- 500 kcal)
 
 3. **View Results**
-   - Daily calorie target
-   - Protein, carbs, and fats breakdown
-   - Grams, percentages, and calories for each macro
-
-4. **Auto-Save**
-   - Calculations automatically saved to database
-   - Instant confirmation with toast notification
+   - Daily calorie target, with BMR and TDEE
+   - Protein, carbs, and fats in grams, percentages, and calories
 
 ## 📊 Calculation Methods
 
@@ -128,24 +81,24 @@ TDEE = BMR × Activity Multiplier
 **Maintenance:** 30% protein, 40% carbs, 30% fats  
 **Muscle Gain:** 30% protein, 45% carbs, 25% fats
 
+## 🧪 About the `server` Folder
+
+This repo also contains a Node.js + Express + MongoDB backend (`server/`) that I built to practice connecting a frontend to an API and a database. The first live version saved every calculation to MongoDB.
+
+I later removed that from the live app. A calculator doesn't need to remember anything (the same inputs always give the same result), users had no way to view saved results, and storing people's age, weight, and height without a clear purpose isn't a good practice for a health app. Removing it also made the app faster, since it no longer waits for a server.
+
+The backend code is kept for reference. Its endpoints:
+- `POST /api/calculations` - Save a calculation
+- `GET /api/calculations` - Get all calculations
+- `GET /api/calculations/:id` - Get a single calculation
+- `DELETE /api/calculations/:id` - Delete a calculation
+
 ## 🚀 Future Enhancements
 
-- [ ] User authentication (sign up/login)
-- [ ] Personalized calculation history per user
+- [ ] Imperial units (lb, ft/in)
 - [ ] Meal planning suggestions
-- [ ] Progress tracking over time
-- [ ] AI-powered nutrition recommendations
 - [ ] Export results as PDF
-- [ ] Mobile app version
-- [ ] Food database integration
-
-## 📝 API Endpoints
-
-### Calculations
-- `POST /api/calculations` - Save new calculation
-- `GET /api/calculations` - Get all calculations
-- `GET /api/calculations/:id` - Get single calculation
-- `DELETE /api/calculations/:id` - Delete calculation
+- [ ] Optional saved history (stored on your device)
 
 ## 🤝 Contributing
 
@@ -159,14 +112,10 @@ MIT License.
 
 **Na Yeon (Nikki) Kim**
 - Transitioning from nutrition background to tech
-- Combining nutrition expertise with full-stack development
+- Combining nutrition expertise with web development
 
 ## 🙏 Acknowledgments
 
 - Mifflin-St Jeor equation for BMR calculation
 - Nutrition research for macro distribution guidelines
-- React and Node.js communities
-
----
-
-⭐ Star this repo if you found it helpful!
+- React community
