@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { Calculator,Activity, Target } from 'lucide-react';
 import './App.css';
@@ -22,6 +22,21 @@ const MacroCalculator = () => {
   const [results, setResults] = useState(null); // null: nothing or empty (no data yet or intentionall empty)
 
   const [isLoading, setIsLoading] = useState(false);
+
+  // After a calculation, bring the results into view (small screens)
+  // and move keyboard/screen-reader focus to them.
+  const resultsRef = useRef(null);
+  useEffect(() => {
+    if (!results || !resultsRef.current) return;
+    const el = resultsRef.current;
+    const top = el.getBoundingClientRect().top;
+    const alreadyVisible = top >= 0 && top < window.innerHeight * 0.5;
+    if (!alreadyVisible) {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    }
+    el.focus({ preventScroll: true });
+  }, [results]);
 
 // step 4 starts here
 
@@ -334,7 +349,7 @@ const calculateMacros = async () => {
 
     {/* Results section */}
     <div className='max-w-4xl mx-auto mc-card'>
-      <h2 className='text-lg md:text-2xl font-semibold text-accent mb-6'>Your Results</h2>
+      <h2 ref={resultsRef} tabIndex={-1} className='text-lg md:text-2xl font-semibold text-accent mb-6 scroll-mt-4 focus:outline-none'>Your Results</h2>
       {results ? (
         <div className='space-y-6 result-container'>
            {/* Daily calorie target */}
@@ -408,7 +423,7 @@ const calculateMacros = async () => {
                 <span className='text-sm font-semibold text-muted'>Fats</span>
                 <div className='text-right flex flex-col'>
                   <span className='text-sm font-bold text-accent'>{results.fats.grams}g</span>
-                  <span className='text-xs text-muted'>({results.fats.percentage}%) • {results.fats.calories}kcal</span>
+                  <span className='text-xs text-muted'>({results.fats.percentage}% • {results.fats.calories}kcal)</span>
                 </div>
               </div>
 
