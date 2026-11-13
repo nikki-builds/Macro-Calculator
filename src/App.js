@@ -462,7 +462,7 @@ const calculateMacros = async () => {
 
     {/* Footer */}
     <div className='text-center mt-8 pb-8 text-muted text-xs md:text-sm'>
-      <p>Built with React, Node.js, Express, and MongoDB</p>
+      <p>Built with React</p>
       <p>Calculations based on peer-reviewed nutrition research</p>
     </div>
 
